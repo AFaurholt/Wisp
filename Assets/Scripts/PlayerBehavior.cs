@@ -4,19 +4,24 @@ using UnityEngine;
 
 public class PlayerBehavior : MonoBehaviour
 {
+    //cam
     [SerializeField] private Camera playerCam;
     [SerializeField] private Vector3 playerCamOffset;
+    //light color
+    [SerializeField] private Light playerLight;
+    [SerializeField] private Color colorSafe;
+    [SerializeField] private Color colorDanger;
+    [SerializeField] private float currentSafetyRange = 0f;
 
-    // Start is called before the first frame update
     void Start()
     {
-        
+        //set offset relative to player
+        playerCam.transform.position = transform.position + playerCamOffset;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+        playerLight.color = Color.Lerp(colorSafe, colorDanger, currentSafetyRange);
     }
 
     void FixedUpdate()
