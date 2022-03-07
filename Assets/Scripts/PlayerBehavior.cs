@@ -5,15 +5,15 @@ using UnityEngine.InputSystem;
 
 public class PlayerBehavior : MonoBehaviour
 {
-  //cam
+  [Header("Camera")]
   [SerializeField] private Camera _playerCam;
   [SerializeField] private Vector3 _playerCamOffset;
-  //light color
+  [Header("Player color")]
   [SerializeField] private Light _playerLight;
   [SerializeField] private Color _colorSafe;
   [SerializeField] private Color _colorDanger;
   [SerializeField] private float _currentSafetyRange = 0f;
-  //movement
+  [Header("Player movement")]
   [SerializeField] private CharacterController _playerCc;
   [SerializeField] private float _terminalVelocity = 20f;
   [SerializeField] private float _maxSpeed = 10f;
@@ -23,11 +23,24 @@ public class PlayerBehavior : MonoBehaviour
   [SerializeField] private float _dashLengthS = 100f;
   [SerializeField] private float _currentDashLengthS = 0f;
   [SerializeField] private Vector2 _moveDirection = Vector2.zero;
-  [SerializeField] private Vector2 _moveDirectionLast = Vector2.zero;
   [SerializeField] private Vector2 _moveVelocity = Vector2.zero;
+  [Header("Zip stuff")]
+  [SerializeField] private LineRenderer _line;
+  [SerializeField] private Gradient _legalColor;
+  [SerializeField] private Gradient _illegalColor;
+  [SerializeField] private float _maxLineLength;
+  [SerializeField] private Vector3[] _linePoints;
+  private RaycastHit[] _lineRaycastHits = new RaycastHit[10];
+  private Vector3 _pointerWorldPos = Vector3.zero;
+
 
   void Start()
   {
+    _linePoints = new Vector3[2];
+    _line.positionCount = 2;
+    _line.enabled = false;
+    _linePoints[0] = transform.position;
+
     //set offset relative to player
     _playerCam.transform.position = transform.position + _playerCamOffset;
   }
@@ -35,6 +48,8 @@ public class PlayerBehavior : MonoBehaviour
   void Update()
   {
     _playerLight.color = Color.Lerp(_colorSafe, _colorDanger, _currentSafetyRange);
+
+    _line.SetPositions(_linePoints);
   }
 
   void FixedUpdate()
@@ -51,14 +66,33 @@ public class PlayerBehavior : MonoBehaviour
     _playerCc.Move(_moveVelocity * Time.deltaTime);
     transform.position = new Vector3(transform.position.x, transform.position.y, 0);
 
-
-    //update delta move
-    _moveDirectionLast = _moveDirection;
+    _linePoints[0] = transform.position;
   }
 
   public void OnMove(InputAction.CallbackContext cbc)
   {
     _moveDirection = cbc.ReadValue<Vector2>();
+  }
+
+  public void OnFire(InputAction.CallbackContext cbc)
+  {
+    if(cbc.started)
+    {
+      //display line
+      _line.enabled = true;
+    }
+
+    if (cbc.canceled)
+    {
+      _line.enabled = false;
+    }
+  }
+
+  public void OnLook(InputAction.CallbackContext cbc)
+  {
+    //update line
+    var vec3 = new Vector3(Pointer.current.position.ReadValue().x, Pointer.current.position.ReadValue().y, -_playerCam.transform.position.z);
+    _pointerWorldPos = _playerCam.ScreenToWorldPoint(vec3);
   }
 
   private float NormalizeF(float val, float min, float max)
