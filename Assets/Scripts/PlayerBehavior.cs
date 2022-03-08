@@ -26,16 +26,20 @@ public class PlayerBehavior : MonoBehaviour
   [SerializeField] private Vector2 _moveVelocity = Vector2.zero;
   [Header("Zip stuff")]
   [SerializeField] private LineRenderer _line;
-  [SerializeField] private Gradient _legalColor;
-  [SerializeField] private Gradient _illegalColor;
-  [SerializeField] private float _maxLineLength;
+  [SerializeField] private Gradient _aimColor;
+  [SerializeField] private Gradient _legalTargetColor;
+  [SerializeField] private float _maxLineLength = 20f;
   [SerializeField] private Vector3[] _linePoints;
+  bool _isLineEnabled = false;
   private RaycastHit[] _lineRaycastHits = new RaycastHit[10];
   private Vector3 _pointerWorldPos = Vector3.zero;
-
+  private int _layerMask;
 
   void Start()
   {
+    //get everything except player stuff
+    _layerMask = ~0;
+
     _linePoints = new Vector3[2];
     _line.positionCount = 2;
     _line.enabled = false;
@@ -50,6 +54,8 @@ public class PlayerBehavior : MonoBehaviour
     _playerLight.color = Color.Lerp(_colorSafe, _colorDanger, _currentSafetyRange);
 
     _line.SetPositions(_linePoints);
+
+    _line.enabled = _isLineEnabled;
   }
 
   void FixedUpdate()
@@ -67,6 +73,17 @@ public class PlayerBehavior : MonoBehaviour
     transform.position = new Vector3(transform.position.x, transform.position.y, 0);
 
     _linePoints[0] = transform.position;
+    
+    var lineDir = _pointerWorldPos - transform.position;
+    var lineLen = Mathf.Min(_maxLineLength, lineDir.magnitude);
+    _linePoints[1] = (lineDir.normalized * lineLen) + transform.position;
+
+    Debug.DrawRay(transform.position, lineDir, Color.red);
+    Debug.DrawRay(transform.position, lineDir.normalized * lineLen, Color.cyan);
+    if(Physics.RaycastNonAlloc(transform.position, lineDir, _lineRaycastHits, lineLen, _layerMask) != 0)
+    {
+      _linePoints[1] = _lineRaycastHits[0].point;
+    }
   }
 
   public void OnMove(InputAction.CallbackContext cbc)
@@ -79,12 +96,12 @@ public class PlayerBehavior : MonoBehaviour
     if(cbc.started)
     {
       //display line
-      _line.enabled = true;
+      _isLineEnabled = true;
     }
 
     if (cbc.canceled)
     {
-      _line.enabled = false;
+      _isLineEnabled = false;
     }
   }
 
