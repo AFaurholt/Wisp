@@ -87,7 +87,7 @@ public class PlayerBehavior : MonoBehaviour
     var lineDir = _pointerWorldPos - _playerCc.transform.position;
     if(lineDir == Vector3.zero) //usually happens right after a zip
     {
-      lineDir.x += 0.00001f;
+      lineDir.x += 0.1f;
     }
     var lineLen = Mathf.Min(_maxLineLength, lineDir.magnitude);
     _linePoints[1] = (lineDir.normalized * lineLen) + _playerCc.transform.position;
@@ -120,6 +120,7 @@ public class PlayerBehavior : MonoBehaviour
           {
             _zippedTo.UndoZip();
           }
+          _moveVelocity = Vector3.zero; //dont retain velocity, it's weird
           _zippedTo = maybeZip;
           _zippedTo.DoZip();
           _playerCc.enabled = false; //disable collision
