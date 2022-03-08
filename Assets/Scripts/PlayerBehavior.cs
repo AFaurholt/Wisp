@@ -26,6 +26,7 @@ public class PlayerBehavior : MonoBehaviour
   [SerializeField] private Vector2 _moveVelocity = Vector2.zero;
   [Header("Zip stuff")]
   [SerializeField] private LineRenderer _line;
+  private Gradient _currentLineColor;
   [SerializeField] private Gradient _aimColor;
   [SerializeField] private Gradient _legalTargetColor;
   [SerializeField] private float _maxLineLength = 20f;
@@ -34,6 +35,8 @@ public class PlayerBehavior : MonoBehaviour
   private RaycastHit[] _lineRaycastHits = new RaycastHit[10];
   private Vector3 _pointerWorldPos = Vector3.zero;
   private int _layerMask;
+  private bool _shouldTryZip = false;
+  private ZipTargetBehavior _zippedTo = null;
 
   void Start()
   {
@@ -43,10 +46,12 @@ public class PlayerBehavior : MonoBehaviour
     _linePoints = new Vector3[2];
     _line.positionCount = 2;
     _line.enabled = false;
-    _linePoints[0] = transform.position;
+    _linePoints[0] = _playerCc.transform.position;
+
+    _currentLineColor = _aimColor;
 
     //set offset relative to player
-    _playerCam.transform.position = transform.position + _playerCamOffset;
+    _playerCam.transform.position = _playerCc.transform.position + _playerCamOffset;
   }
 
   void Update()
@@ -54,36 +59,91 @@ public class PlayerBehavior : MonoBehaviour
     _playerLight.color = Color.Lerp(_colorSafe, _colorDanger, _currentSafetyRange);
 
     _line.SetPositions(_linePoints);
-
+    _line.colorGradient = _currentLineColor;
     _line.enabled = _isLineEnabled;
   }
 
   void FixedUpdate()
   {
-    Vector2 move = Vector2.Scale(_moveDirection, new Vector2(_baseSpeed, _baseSpeed));
-    _moveVelocity += move;
-    _moveVelocity = Vector2.ClampMagnitude(_moveVelocity, _maxSpeed);
-
-    if(Mathf.Epsilon > _moveDirection.sqrMagnitude)
+    //movement
+    if (_playerCc.enabled)
     {
-      _moveVelocity = Vector2.MoveTowards(_moveVelocity, Vector2.zero, _decelSpeed);
+      Vector2 move = Vector2.Scale(_moveDirection, new Vector2(_baseSpeed, _baseSpeed));
+      _moveVelocity += move;
+      _moveVelocity = Vector2.ClampMagnitude(_moveVelocity, _maxSpeed);
+
+      if (Mathf.Epsilon > _moveDirection.sqrMagnitude)
+      {
+        _moveVelocity = Vector2.MoveTowards(_moveVelocity, Vector2.zero, _decelSpeed);
+      }
+
+      _playerCc.Move(_moveVelocity * Time.deltaTime);
+      _playerCc.transform.position = new Vector3(_playerCc.transform.position.x, _playerCc.transform.position.y, 0);
     }
 
-    _playerCc.Move(_moveVelocity * Time.deltaTime);
-    transform.position = new Vector3(transform.position.x, transform.position.y, 0);
+    //line stuff
+    _linePoints[0] = _playerCc.transform.position;
 
-    _linePoints[0] = transform.position;
-    
-    var lineDir = _pointerWorldPos - transform.position;
+    var lineDir = _pointerWorldPos - _playerCc.transform.position;
+    if(lineDir == Vector3.zero) //usually happens right after a zip
+    {
+      lineDir.x += 0.00001f;
+    }
     var lineLen = Mathf.Min(_maxLineLength, lineDir.magnitude);
-    _linePoints[1] = (lineDir.normalized * lineLen) + transform.position;
+    _linePoints[1] = (lineDir.normalized * lineLen) + _playerCc.transform.position;
 
-    Debug.DrawRay(transform.position, lineDir, Color.red);
-    Debug.DrawRay(transform.position, lineDir.normalized * lineLen, Color.cyan);
-    if(Physics.RaycastNonAlloc(transform.position, lineDir, _lineRaycastHits, lineLen, _layerMask) != 0)
+    Debug.DrawRay(_playerCc.transform.position, lineDir, Color.red);
+    Debug.DrawRay(_playerCc.transform.position, lineDir.normalized * lineLen, Color.cyan);
+
+    _currentLineColor = _aimColor;
+    int hits = Physics.RaycastNonAlloc(_playerCc.transform.position, lineDir, _lineRaycastHits, lineLen, _layerMask);
+    if (hits > 0)
     {
-      _linePoints[1] = _lineRaycastHits[0].point;
+      //find the hit with shortest distance to origin
+      RaycastHit hit = _lineRaycastHits[0];
+      for (int i = 1; i < hits; i++)
+      {
+        if (_lineRaycastHits[i].distance < hit.distance)
+        {
+          hit = _lineRaycastHits[i];
+        }
+      }
+      lineLen = hit.distance; //how long the line actually is
+      //is the hit a zip point
+      var maybeZip = hit.transform.parent.GetComponent<ZipTargetBehavior>();
+      if (maybeZip)
+      {
+        _currentLineColor = _legalTargetColor;
+        if (_shouldTryZip) // try to zip
+        {
+          if (_zippedTo)
+          {
+            _zippedTo.UndoZip();
+          }
+          _zippedTo = maybeZip;
+          _zippedTo.DoZip();
+          _playerCc.enabled = false; //disable collision
+          _playerCc.transform.position = hit.transform.position;
+          _shouldTryZip = false; //we zipped good, don't zip more
+        }
+      }
+      _linePoints[1] = hit.point;
     }
+
+    if (_zippedTo && _shouldTryZip) //we're inside a zippy thing and trying to zip
+    {
+      _playerCc.enabled = true;
+      float offset = 0;
+      if(hits > 0) // we're colliding with something
+      {
+        offset = _playerCc.radius * 1.4f; //give a little clearance
+      }
+      _playerCc.transform.position = (_linePoints[1] - _playerCc.transform.position).normalized * (lineLen - offset) + _playerCc.transform.position;
+      _zippedTo.UndoZip();
+      _zippedTo = null;
+    }
+
+    _shouldTryZip = false;
   }
 
   public void OnMove(InputAction.CallbackContext cbc)
@@ -93,7 +153,7 @@ public class PlayerBehavior : MonoBehaviour
 
   public void OnFire(InputAction.CallbackContext cbc)
   {
-    if(cbc.started)
+    if (cbc.started)
     {
       //display line
       _isLineEnabled = true;
@@ -102,6 +162,7 @@ public class PlayerBehavior : MonoBehaviour
     if (cbc.canceled)
     {
       _isLineEnabled = false;
+      _shouldTryZip = true;
     }
   }
 
