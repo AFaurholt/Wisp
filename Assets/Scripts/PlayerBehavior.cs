@@ -85,7 +85,7 @@ public class PlayerBehavior : MonoBehaviour
     _linePoints[0] = _playerCc.transform.position;
 
     var lineDir = _pointerWorldPos - _playerCc.transform.position;
-    if(lineDir == Vector3.zero) //usually happens right after a zip
+    if (lineDir == Vector3.zero) //usually happens right after a zip
     {
       lineDir.x += 0.1f;
     }
@@ -110,23 +110,27 @@ public class PlayerBehavior : MonoBehaviour
       }
       lineLen = hit.distance; //how long the line actually is
       //is the hit a zip point
-      var maybeZip = hit.transform.parent.GetComponent<ZipTargetBehavior>();
-      if (maybeZip)
+      if (hit.transform.parent)
       {
-        _currentLineColor = _legalTargetColor;
-        if (_shouldTryZip) // try to zip
+        var maybeZip = hit.transform.parent.GetComponent<ZipTargetBehavior>();
+        if (maybeZip)
         {
-          if (_zippedTo)
+          _currentLineColor = _legalTargetColor;
+          if (_shouldTryZip) // try to zip
           {
-            _zippedTo.UndoZip();
+            if (_zippedTo)
+            {
+              _zippedTo.UndoZip();
+            }
+            _moveVelocity = Vector3.zero; //dont retain velocity, it's weird
+            _zippedTo = maybeZip;
+            _zippedTo.DoZip();
+            _playerCc.enabled = false; //disable collision
+            _playerCc.transform.position = hit.transform.position;
+            _shouldTryZip = false; //we zipped good, don't zip more
           }
-          _moveVelocity = Vector3.zero; //dont retain velocity, it's weird
-          _zippedTo = maybeZip;
-          _zippedTo.DoZip();
-          _playerCc.enabled = false; //disable collision
-          _playerCc.transform.position = hit.transform.position;
-          _shouldTryZip = false; //we zipped good, don't zip more
         }
+
       }
       _linePoints[1] = hit.point;
     }
@@ -135,7 +139,7 @@ public class PlayerBehavior : MonoBehaviour
     {
       _playerCc.enabled = true;
       float offset = 0;
-      if(hits > 0) // we're colliding with something
+      if (hits > 0) // we're colliding with something
       {
         offset = _playerCc.radius * 1.4f; //give a little clearance
       }
