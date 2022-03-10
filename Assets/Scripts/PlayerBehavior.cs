@@ -8,6 +8,11 @@ public class PlayerBehavior : MonoBehaviour
   [Header("Camera")]
   [SerializeField] private Camera _playerCam;
   [SerializeField] private Vector3 _playerCamOffset;
+  [SerializeField] private Vector3 _playerCamMaxOffset;
+  [SerializeField] private float _camTime = 1f;
+  [SerializeField] private Vector3 _camVelocity = Vector3.zero;
+  private Vector3 _camToPoint;
+  [SerializeField] private Vector3 _newCamPos;
   [Header("Player color")]
   [SerializeField] private Light _playerLight;
   [SerializeField] private Color _colorSafe;
@@ -19,9 +24,6 @@ public class PlayerBehavior : MonoBehaviour
   [SerializeField] private float _maxSpeed = 10f;
   [SerializeField] private float _baseSpeed = 1f;
   [SerializeField] private float _decelSpeed = 0.5f;
-  [SerializeField] private float _dashSpeed = 50f;
-  [SerializeField] private float _dashLengthS = 100f;
-  [SerializeField] private float _currentDashLengthS = 0f;
   [SerializeField] private Vector2 _moveDirection = Vector2.zero;
   [SerializeField] private Vector2 _moveVelocity = Vector2.zero;
   [Header("Zip stuff")]
@@ -47,11 +49,14 @@ public class PlayerBehavior : MonoBehaviour
     _line.positionCount = 2;
     _line.enabled = false;
     _linePoints[0] = _playerCc.transform.position;
+    _linePoints[1] = _playerCc.transform.position;
 
     _currentLineColor = _aimColor;
 
     //set offset relative to player
     _playerCam.transform.position = _playerCc.transform.position + _playerCamOffset;
+    _camToPoint = _playerCam.transform.position;
+    _newCamPos = _camToPoint;
   }
 
   void Update()
@@ -63,8 +68,16 @@ public class PlayerBehavior : MonoBehaviour
     _line.enabled = _isLineEnabled;
   }
 
+  void LateUpdate()
+  {
+    _playerCam.transform.position = _newCamPos;
+  }
+
   void FixedUpdate()
   {
+    var vec3 = new Vector3(Pointer.current.position.ReadValue().x, Pointer.current.position.ReadValue().y, -_playerCam.transform.position.z);
+    _pointerWorldPos = _playerCam.ScreenToWorldPoint(vec3);
+
     //movement
     if (_playerCc.enabled)
     {
@@ -77,7 +90,7 @@ public class PlayerBehavior : MonoBehaviour
         _moveVelocity = Vector2.MoveTowards(_moveVelocity, Vector2.zero, _decelSpeed);
       }
 
-      _playerCc.Move(_moveVelocity * Time.deltaTime);
+      _playerCc.Move(_moveVelocity * 0.01f); //I'm assuming one unit is 1 meter, so we wanna make that smaller
       _playerCc.transform.position = new Vector3(_playerCc.transform.position.x, _playerCc.transform.position.y, 0);
     }
 
@@ -85,70 +98,124 @@ public class PlayerBehavior : MonoBehaviour
     _linePoints[0] = _playerCc.transform.position;
 
     var lineDir = _pointerWorldPos - _playerCc.transform.position;
-    if (lineDir == Vector3.zero) //usually happens right after a zip
-    {
-      lineDir.x += 0.1f;
-    }
     var lineLen = Mathf.Min(_maxLineLength, lineDir.magnitude);
     _linePoints[1] = (lineDir.normalized * lineLen) + _playerCc.transform.position;
 
-    Debug.DrawRay(_playerCc.transform.position, lineDir, Color.red);
-    Debug.DrawRay(_playerCc.transform.position, lineDir.normalized * lineLen, Color.cyan);
-
     _currentLineColor = _aimColor;
-    int hits = Physics.RaycastNonAlloc(_playerCc.transform.position, lineDir, _lineRaycastHits, lineLen, _layerMask);
-    if (hits > 0)
+    if (lineDir != Vector3.zero)
     {
-      //find the hit with shortest distance to origin
-      RaycastHit hit = _lineRaycastHits[0];
-      for (int i = 1; i < hits; i++)
+      int hits = Physics.RaycastNonAlloc(_playerCc.transform.position, lineDir, _lineRaycastHits, lineLen, _layerMask);
+      if (hits > 0)
       {
-        if (_lineRaycastHits[i].distance < hit.distance)
+        //find the hit with shortest distance to origin
+        RaycastHit hit = _lineRaycastHits[0];
+        for (int i = 1; i < hits; i++)
         {
-          hit = _lineRaycastHits[i];
-        }
-      }
-      lineLen = hit.distance; //how long the line actually is
-      //is the hit a zip point
-      if (hit.transform.parent)
-      {
-        var maybeZip = hit.transform.parent.GetComponent<ZipTargetBehavior>();
-        if (maybeZip)
-        {
-          _currentLineColor = _legalTargetColor;
-          if (_shouldTryZip) // try to zip
+          if (_lineRaycastHits[i].distance < hit.distance)
           {
-            if (_zippedTo)
+            hit = _lineRaycastHits[i];
+          }
+        }
+        lineLen = hit.distance; //how long the line actually is
+
+        if (hit.transform.parent)
+        {
+          var maybeZip = hit.transform.parent.GetComponent<ZipTargetBehavior>(); //is the hit a zip point
+          if (maybeZip)
+          {
+            _currentLineColor = _legalTargetColor;
+            if (_shouldTryZip) // try to zip
             {
-              _zippedTo.UndoZip();
+              if (_zippedTo)
+              {
+                _zippedTo.UndoZip();
+              }
+              _moveVelocity = Vector3.zero; //dont retain velocity, it's weird
+              _zippedTo = maybeZip;
+              _zippedTo.DoZip();
+              _playerCc.enabled = false; //disable collision
+              _playerCc.transform.position = hit.transform.position;
+              _shouldTryZip = false; //we zipped good, don't zip more
             }
-            _moveVelocity = Vector3.zero; //dont retain velocity, it's weird
-            _zippedTo = maybeZip;
-            _zippedTo.DoZip();
-            _playerCc.enabled = false; //disable collision
-            _playerCc.transform.position = hit.transform.position;
-            _shouldTryZip = false; //we zipped good, don't zip more
           }
         }
 
+        _linePoints[1] = hit.point;
       }
-      _linePoints[1] = hit.point;
+
+      //set color?
+      lineDir = _linePoints[1].normalized;
+      hits = Physics.SphereCastNonAlloc(_linePoints[1], _playerCc.radius, lineDir, _lineRaycastHits, 0.1f, _layerMask);
+      if (hits > 0)
+      {
+        for (int i = 0; i < hits; i++)
+        {
+          if (_lineRaycastHits[i].transform.parent)
+          {
+            var maybeZip = _lineRaycastHits[i].transform.parent.GetComponent<ZipTargetBehavior>(); //is the hit a zip point
+            if (maybeZip)
+            {
+              _currentLineColor = _legalTargetColor;
+              if (_shouldTryZip) // try to zip
+              {
+                if (_zippedTo)
+                {
+                  _zippedTo.UndoZip();
+                }
+                _moveVelocity = Vector3.zero; //dont retain velocity, it's weird
+                _zippedTo = maybeZip;
+                _zippedTo.DoZip();
+                _playerCc.enabled = false; //disable collision
+                _playerCc.transform.position = maybeZip.transform.position;
+                _shouldTryZip = false; //we zipped good, don't zip more
+              }
+            }
+          }
+        }
+      }
+      else if (_zippedTo)
+      {
+        _currentLineColor = _legalTargetColor;
+        if (_shouldTryZip)
+        {
+          _zippedTo.UndoZip();
+          _zippedTo = null;
+          _playerCc.transform.position = _linePoints[1];
+          _playerCc.enabled = true;
+        }
+      }
+
+      // if (_zippedTo && _shouldTryZip) //we're inside a zippy thing and trying to zip
+      // {
+      //   //check if there's room to zip out
+      //   //lineDir = _linePoints[1].normalized;
+      //   //hits = Physics.SphereCastNonAlloc(_linePoints[1], _playerCc.radius, lineDir, _lineRaycastHits, 0.1f, _layerMask);
+      //   if (hits > 0)
+      //   {
+      //     //assume illegal zip
+      //     for (int i = 0; i < hits; i++)
+      //     {
+      //       Debug.Log(_lineRaycastHits[i].transform.name);
+      //       Debug.Log(_lineRaycastHits[i]);
+      //     }
+      //   }
+
+      //   // _playerCc.enabled = true;
+
+      //   // //origin is end of last raycast
+      //   // _playerCc.transform.position = (_linePoints[1] - _playerCc.transform.position).normalized * (lineLen - offset) + _playerCc.transform.position;
+      //   // _zippedTo.UndoZip();
+      //   // _zippedTo = null;
+      // }
     }
 
-    if (_zippedTo && _shouldTryZip) //we're inside a zippy thing and trying to zip
-    {
-      _playerCc.enabled = true;
-      float offset = 0;
-      if (hits > 0) // we're colliding with something
-      {
-        offset = _playerCc.radius * 1.4f; //give a little clearance
-      }
-      _playerCc.transform.position = (_linePoints[1] - _playerCc.transform.position).normalized * (lineLen - offset) + _playerCc.transform.position;
-      _zippedTo.UndoZip();
-      _zippedTo = null;
-    }
 
     _shouldTryZip = false;
+
+    //camera smooth
+    var from = _playerCam.transform.position;
+    var to = _playerCc.transform.position + Vector3.Lerp(_playerCamOffset, _playerCamMaxOffset, NormalizeF(_playerCc.velocity.magnitude, 0f, _terminalVelocity));
+    _newCamPos = Vector3.SmoothDamp(from, to, ref _camVelocity, _camTime, _terminalVelocity + 1f, Time.fixedDeltaTime);
   }
 
   public void OnMove(InputAction.CallbackContext cbc)
@@ -173,9 +240,7 @@ public class PlayerBehavior : MonoBehaviour
 
   public void OnLook(InputAction.CallbackContext cbc)
   {
-    //update line
-    var vec3 = new Vector3(Pointer.current.position.ReadValue().x, Pointer.current.position.ReadValue().y, -_playerCam.transform.position.z);
-    _pointerWorldPos = _playerCam.ScreenToWorldPoint(vec3);
+    //sad empty method :c
   }
 
   private float NormalizeF(float val, float min, float max)

@@ -1540,6 +1540,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerCam: {fileID: 963194227}
   _playerCamOffset: {x: 0, y: 0, z: -10}
+  _playerCamMaxOffset: {x: 0, y: 0, z: -20}
+  _camTime: 0.49
+  _camVelocity: {x: 0, y: 0, z: 0}
+  _camToPoint: {x: 0, y: 0, z: 0}
+  _newCamPos: {x: 0, y: 0, z: 0}
   _playerLight: {fileID: 1669802969}
   _colorSafe: {r: 0, g: 0, b: 0, a: 0}
   _colorDanger: {r: 0, g: 0, b: 0, a: 0}
