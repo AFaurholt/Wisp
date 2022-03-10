@@ -1521,6 +1521,22 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 239a0edd-4779-4bab-a306-21ded325c76a
     m_ActionName: UI/TrackedDeviceOrientation
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1952621869}
+        m_TargetAssemblyTypeName: PlayerBehavior, Assembly-CSharp
+        m_MethodName: OnSprint
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 2b36750c-96c4-4655-8127-9a3874e888ec
+    m_ActionName: Player/Sprint[/Keyboard/leftShift]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -1543,7 +1559,6 @@ MonoBehaviour:
   _playerCamMaxOffset: {x: 0, y: 0, z: -20}
   _camTime: 0.49
   _camVelocity: {x: 0, y: 0, z: 0}
-  _camToPoint: {x: 0, y: 0, z: 0}
   _newCamPos: {x: 0, y: 0, z: 0}
   _playerLight: {fileID: 1669802969}
   _colorSafe: {r: 0, g: 0, b: 0, a: 0}
@@ -1554,9 +1569,7 @@ MonoBehaviour:
   _maxSpeed: 10
   _baseSpeed: 1
   _decelSpeed: 0.5
-  _dashSpeed: 50
-  _dashLengthS: 100
-  _currentDashLengthS: 0
+  _sprintExtraSpeed: 10
   _moveDirection: {x: 0, y: 0}
   _moveVelocity: {x: 0, y: 0}
   _line: {fileID: 1952621870}

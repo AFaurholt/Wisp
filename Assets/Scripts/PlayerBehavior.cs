@@ -24,8 +24,10 @@ public class PlayerBehavior : MonoBehaviour
   [SerializeField] private float _maxSpeed = 10f;
   [SerializeField] private float _baseSpeed = 1f;
   [SerializeField] private float _decelSpeed = 0.5f;
+  [SerializeField] private float _sprintExtraSpeed = 10f;
   [SerializeField] private Vector2 _moveDirection = Vector2.zero;
   [SerializeField] private Vector2 _moveVelocity = Vector2.zero;
+  private bool _shouldSprint = false;
   [Header("Zip stuff")]
   [SerializeField] private LineRenderer _line;
   private Gradient _currentLineColor;
@@ -81,7 +83,12 @@ public class PlayerBehavior : MonoBehaviour
     //movement
     if (_playerCc.enabled)
     {
-      Vector2 move = Vector2.Scale(_moveDirection, new Vector2(_baseSpeed, _baseSpeed));
+      var speed = _baseSpeed;
+      if(_shouldSprint)
+      {
+        speed += _sprintExtraSpeed;
+      }
+      Vector2 move = Vector2.Scale(_moveDirection, new Vector2(speed, speed));
       _moveVelocity += move;
       _moveVelocity = Vector2.ClampMagnitude(_moveVelocity, _maxSpeed);
 
@@ -241,6 +248,19 @@ public class PlayerBehavior : MonoBehaviour
   public void OnLook(InputAction.CallbackContext cbc)
   {
     //sad empty method :c
+  }
+
+  public void OnSprint(InputAction.CallbackContext cbc)
+  {
+    if (cbc.started)
+    {
+      _shouldSprint = true;
+    }
+
+    if (cbc.canceled)
+    {
+      _shouldSprint = false;
+    }
   }
 
   private float NormalizeF(float val, float min, float max)
