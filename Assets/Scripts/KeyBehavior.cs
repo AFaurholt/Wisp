@@ -12,7 +12,12 @@ namespace Game
     Transform _keyHolder;
     bool _shouldFollow = false;
     bool _shouldDie = false;
+    Vector3 _startPos;
 
+    void Start()
+    {
+      _startPos = _rb.transform.position;
+    }
     void OnTriggerEnter(Collider other)
     {
       if (!_shouldFollow)
@@ -22,6 +27,7 @@ namespace Game
           _rb.gameObject.layer = PlayerManager.PlayerLayer;
           _keyHolder = PlayerManager.PlayerKeyHolder;
           _shouldFollow = true;
+          PlayerManager.CurrentKey = this;
         }
       }
       else if (other.gameObject == _keyHole)
@@ -29,8 +35,8 @@ namespace Game
         _rb.detectCollisions = false;
         _keyHolder = other.transform;
         _shouldDie = true;
+        PlayerManager.CurrentKey = null;
       }
-
     }
 
     void FixedUpdate()
@@ -43,11 +49,20 @@ namespace Game
         _rb.velocity = dir * mag * PlayerManager.KeySpeed;
       }
 
-      if(_shouldDie && _rb.transform.position == _keyHolder.transform.position)
+      if (_shouldDie && _rb.transform.position == _keyHolder.transform.position)
       {
         _keyHolder.GetComponent<KeyHoleBehavior>().StartMoving();
         Destroy(_rb.gameObject);
       }
+    }
+
+    public void ResetKey()
+    {
+      _shouldFollow = false;
+      _rb.transform.position = _startPos;
+      _rb.gameObject.layer = PlayerManager.DefaultLayer;
+      PlayerManager.CurrentKey = null;
+      _rb.velocity = Vector3.zero;
     }
   }
 }

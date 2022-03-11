@@ -46,11 +46,15 @@ namespace Game
     [Header("Key stuff")]
     [SerializeField] private Transform _keyHolder;
     [SerializeField] private float _keySpeed = 10f;
+    [Header("Death stuff")]
+    [SerializeField] private float _deathWaitTime = 3f;
+    float _currentDeathWaitTime = 0f;
+    bool _isDead = false;
 
     void Start()
     {
       //get everything except player stuff
-      _layerMask = ~0;
+      _layerMask = PlayerManager.PlayerLayer;
 
       _linePoints = new Vector3[2];
       _line.positionCount = 2;
@@ -67,6 +71,7 @@ namespace Game
 
       PlayerManager.PlayerKeyHolder = _keyHolder;
       PlayerManager.KeySpeed = _keySpeed;
+      PlayerManager.CurrentPlayer = this;
     }
 
     void Update()
@@ -89,7 +94,7 @@ namespace Game
       _pointerWorldPos = _playerCam.ScreenToWorldPoint(vec3);
 
       //movement
-      if (_playerCc.enabled)
+      if (_playerCc.enabled && !_isDead)
       {
         var speed = _baseSpeed;
         if (_shouldSprint)
@@ -117,7 +122,7 @@ namespace Game
       _linePoints[1] = (lineDir.normalized * lineLen) + _playerCc.transform.position;
 
       _currentLineColor = _aimColor;
-      if (lineDir != Vector3.zero)
+      if (lineDir != Vector3.zero && !_isDead)
       {
         int hits = Physics.RaycastNonAlloc(_playerCc.transform.position, lineDir, _lineRaycastHits, lineLen, _layerMask, QueryTriggerInteraction.Ignore);
         if (hits > 0)
@@ -203,7 +208,6 @@ namespace Game
         }
       }
 
-
       _shouldTryZip = false;
 
       //camera smooth
@@ -212,6 +216,19 @@ namespace Game
       _newCamPos = Vector3.SmoothDamp(from, to, ref _camVelocity, _camTime, _terminalVelocity + 1f, Time.fixedDeltaTime);
 
       PlayerManager.PlayerVelocity = _moveVelocity;
+
+      //death stuff
+      if (_isDead)
+      {
+        _currentDeathWaitTime += Time.fixedDeltaTime;
+        if (_currentDeathWaitTime >= _deathWaitTime)
+        {
+          _modelGo.SetActive(true);
+          _playerCc.transform.position = PlayerManager.CurrentRespawn.position;
+          _isDead = false;
+          _playerCc.gameObject.layer = PlayerManager.PlayerLayer;
+        }
+      }
     }
 
     public void OnMove(InputAction.CallbackContext cbc)
@@ -221,13 +238,13 @@ namespace Game
 
     public void OnFire(InputAction.CallbackContext cbc)
     {
-      if (cbc.started)
+      if (cbc.started && !_isDead)
       {
         //display line
         _isLineEnabled = true;
       }
 
-      if (cbc.canceled)
+      if (cbc.canceled && !_isDead)
       {
         _isLineEnabled = false;
         _shouldTryZip = true;
@@ -249,6 +266,20 @@ namespace Game
       if (cbc.canceled)
       {
         _shouldSprint = false;
+      }
+    }
+
+    public void Die()
+    {
+      _currentDeathWaitTime = 0f;
+      _isDead = true;
+      _modelGo.SetActive(false);
+      _playerCc.gameObject.layer = PlayerManager.DeadLayer;
+      _isLineEnabled = false;
+      _moveVelocity = Vector3.zero;
+      if (PlayerManager.CurrentKey)
+      {
+        PlayerManager.CurrentKey.ResetKey();
       }
     }
   }
