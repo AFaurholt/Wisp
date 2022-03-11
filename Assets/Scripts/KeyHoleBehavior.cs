@@ -24,7 +24,7 @@ namespace Game
       }
     }
 
-    async void FixedUpdate()
+    void FixedUpdate()
     {
       if (_shouldMove)
       {
