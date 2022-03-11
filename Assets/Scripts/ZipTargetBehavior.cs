@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+namespace Game
+{
+ 
 public class ZipTargetBehavior : MonoBehaviour
 {
   [SerializeField] private Color _activeColor;
@@ -32,4 +34,6 @@ public class ZipTargetBehavior : MonoBehaviour
     {
       _currentColor = _inactiveColor;
     }
+}
+ 
 }

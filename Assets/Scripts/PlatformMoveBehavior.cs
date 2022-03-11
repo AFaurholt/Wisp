@@ -63,8 +63,5 @@ namespace Game
         _currentTime = 0;
       }
     }
-
-    
   }
-
 }
