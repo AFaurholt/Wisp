@@ -5,18 +5,18 @@ using UnityEngine;
 public class AudioManager : MonoBehaviour
 {
     private CharacterController playerController;
-    private float characterVeloctiy;
+    private float characterMagnitude;
     public AudioSource wispLoop;
     void Start()
     {
         playerController = GameObject.Find("GameManager").GetComponent<CharacterController>();
-        characterVeloctiy = playerController.velocity.magnitude;
-        wispLoop.Play();
+        characterMagnitude = playerController.velocity.magnitude;
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        wispLoop.volume = 1;
     }
 }
