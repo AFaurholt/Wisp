@@ -11,7 +11,6 @@ namespace Game
     {
       if (other.gameObject.layer == PlayerManager.PlayerLayer)
       {
-        Debug.Log("hit");
         PlayerManager.CurrentRespawn = _respawnPoint;
       }
     }

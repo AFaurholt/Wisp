@@ -233,6 +233,10 @@ namespace Game
       //camera smooth
       var from = _playerCam.transform.position;
       var to = _playerCc.transform.position + Vector3.Lerp(_playerCamOffset, _playerCamMaxOffset, PlayerManager.NormalizeF(_playerCc.velocity.magnitude, 0f, _terminalVelocity));
+      if(_zippedTo)
+      {
+        to = _playerCc.transform.position + _playerCamMaxOffset;
+      }
       _newCamPos = Vector3.SmoothDamp(from, to, ref _camVelocity, _camTime, _terminalVelocity + 1f, Time.fixedDeltaTime);
 
       PlayerManager.PlayerVelocity = _moveVelocity;

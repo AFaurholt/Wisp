@@ -8,6 +8,7 @@ namespace Game
     public static KeyBehavior CurrentKey { get; set; }
     public static float KeySpeed { get; internal set; }
     public static Vector3 PlayerVelocity { get; set; }
+    public const int PlayerPickupLayer = 7;
     public const int DeadLayer = 6;
     public const int PlayerLayer = 3;
     public const int DefaultLayer = 1;

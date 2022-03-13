@@ -24,14 +24,16 @@ namespace Game
       {
         if (other.gameObject.layer == PlayerManager.PlayerLayer)
         {
-          _rb.gameObject.layer = PlayerManager.PlayerLayer;
+          Debug.Log(name + "picked");
+          _rb.gameObject.layer = PlayerManager.PlayerPickupLayer;
           _keyHolder = PlayerManager.PlayerKeyHolder;
           _shouldFollow = true;
           PlayerManager.CurrentKey = this;
         }
       }
-      else if (other.gameObject == _keyHole)
+      else if (other.gameObject == _keyHole && !_shouldDie)
       {
+        Debug.Log(name + " delivered to " + _keyHole.name);
         _rb.detectCollisions = false;
         _keyHolder = other.transform;
         _shouldDie = true;
@@ -49,9 +51,10 @@ namespace Game
         _rb.velocity = dir * mag * PlayerManager.KeySpeed;
       }
 
-      if (_shouldDie && _rb.transform.position == _keyHolder.transform.position)
+      if (_shouldDie && Vector3.Distance(_rb.transform.position, _keyHolder.transform.position) < 0.1f)
       {
         _keyHolder.GetComponent<KeyHoleBehavior>().StartMoving();
+        Debug.Log(name + "dying");
         Destroy(_rb.gameObject);
       }
     }
