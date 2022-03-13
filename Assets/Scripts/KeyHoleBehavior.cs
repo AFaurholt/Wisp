@@ -46,7 +46,6 @@ namespace Game
 
         if(numNotDone == 0) //all done
         {
-          Debug.Log(name + " sleeps");
           enabled = false; //go sloop z_z
         }
       }
@@ -54,7 +53,6 @@ namespace Game
 
     public void StartMoving()
     {
-      Debug.Log(name + " is moving");
       _shouldMove = true;
     }
   }
