@@ -60,6 +60,7 @@ namespace Game
     [SerializeField] private float _deathWaitTime = 3f;
     float _currentDeathWaitTime = 0f;
     bool _isDead = false;
+    bool _isDeathCamMove = false;
 
     void Start()
     {
@@ -233,26 +234,43 @@ namespace Game
       //camera smooth
       var from = _playerCam.transform.position;
       var to = _playerCc.transform.position + Vector3.Lerp(_playerCamOffset, _playerCamMaxOffset, PlayerManager.NormalizeF(_playerCc.velocity.magnitude, 0f, _terminalVelocity));
-      if(_zippedTo)
+      if (_zippedTo)
       {
         to = _playerCc.transform.position + _playerCamMaxOffset;
       }
-      _newCamPos = Vector3.SmoothDamp(from, to, ref _camVelocity, _camTime, _terminalVelocity + 1f, Time.fixedDeltaTime);
 
-      PlayerManager.PlayerVelocity = _moveVelocity;
+      _newCamPos = Vector3.SmoothDamp(from, to, ref _camVelocity, _camTime, _terminalVelocity + 1f, Time.fixedDeltaTime);
 
       //death stuff
       if (_isDead)
       {
-        _currentDeathWaitTime += Time.fixedDeltaTime;
-        if (_currentDeathWaitTime >= _deathWaitTime)
+        if (!_isDeathCamMove)
         {
-          _modelGo.SetActive(true);
-          _playerCc.transform.position = PlayerManager.CurrentRespawn.position;
-          _isDead = false;
-          _playerCc.gameObject.layer = PlayerManager.PlayerLayer;
+          _currentDeathWaitTime += Time.fixedDeltaTime;
+        }
+        if (_currentDeathWaitTime >= _deathWaitTime || _isDeathCamMove)
+        {
+          _isDeathCamMove = true;
+          var newFrom = _playerCc.transform.position + _playerCamMaxOffset;
+          var newTo = PlayerManager.CurrentRespawn.position + _playerCamMaxOffset;
+          _newCamPos = Vector3.Lerp(newTo, newFrom, PlayerManager.NormalizeF(_currentDeathWaitTime, 0f, _deathWaitTime));
+          _currentDeathWaitTime -= Time.fixedDeltaTime;
+
+          if (_currentDeathWaitTime <= 0f)
+          {
+            _camVelocity = Vector3.zero;
+            _modelGo.SetActive(true);
+            _playerCc.transform.position = PlayerManager.CurrentRespawn.position;
+            _isDead = false;
+            _playerCc.gameObject.layer = PlayerManager.PlayerLayer;
+            _isDeathCamMove = false;
+            _newCamPos = Vector3.SmoothDamp(from, _playerCc.transform.position + _playerCamOffset, ref _camVelocity, _camTime, _terminalVelocity + 1f, Time.fixedDeltaTime);
+          }
         }
       }
+
+
+      PlayerManager.PlayerVelocity = _moveVelocity;
     }
 
     public void OnMove(InputAction.CallbackContext cbc)
