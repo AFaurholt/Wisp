@@ -17,9 +17,19 @@ namespace Game
     [SerializeField] private Vector3 _newCamPos;
     [Header("Player color")]
     [SerializeField] private Light _playerLight;
+    [SerializeField] private MeshRenderer _meshRend;
     [SerializeField] private Color _colorSafe;
     [SerializeField] private Color _colorDanger;
+    [SerializeField] private Color _colorHopeful;
+    [SerializeField] private Material _matSafe;
+    [SerializeField] private Material _matDanger;
+    [SerializeField] private Material _matHopeful;
     [SerializeField] private float _currentSafetyRange = 0f;
+    [SerializeField] private int _pulses = 3;
+    [SerializeField] private float _pulseInterval = 0.5f;
+    int _currentPulse = 0;
+    float _currentInterval = 0f;
+    float _currentMood = 0f;
     [Header("Player movement")]
     [SerializeField] private CharacterController _playerCc;
     [SerializeField] private float _terminalVelocity = 20f;
@@ -76,7 +86,17 @@ namespace Game
 
     void Update()
     {
-      _playerLight.color = Color.Lerp(_colorSafe, _colorDanger, _currentSafetyRange);
+      if (_currentSafetyRange < 0)
+      {
+        float safety = _currentSafetyRange * -1;
+        _playerLight.color = Color.Lerp(_colorSafe, _colorHopeful, safety);
+        _meshRend.material.Lerp(_matSafe, _matHopeful, safety);
+      }
+      else
+      {
+        _playerLight.color = Color.Lerp(_colorSafe, _colorDanger, _currentSafetyRange);
+        _meshRend.material.Lerp(_matSafe, _matDanger, _currentSafetyRange);
+      }
 
       _line.SetPositions(_linePoints);
       _line.colorGradient = _currentLineColor;

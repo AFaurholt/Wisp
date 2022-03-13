@@ -3140,9 +3140,16 @@ MonoBehaviour:
   _camVelocity: {x: 0, y: 0, z: 0}
   _newCamPos: {x: 0, y: 0, z: 0}
   _playerLight: {fileID: 1669802969}
-  _colorSafe: {r: 0, g: 0, b: 0, a: 0}
-  _colorDanger: {r: 0, g: 0, b: 0, a: 0}
+  _meshRend: {fileID: 1669802967}
+  _colorSafe: {r: 0.07863116, g: 0.78931916, b: 0.8773585, a: 0}
+  _colorDanger: {r: 1, g: 0.30145964, b: 0.07075471, a: 0}
+  _colorHopeful: {r: 0, g: 1, b: 0.049598217, a: 0}
+  _matSafe: {fileID: 2100000, guid: e34d185383ff19d4a92075ef2a32bce3, type: 2}
+  _matDanger: {fileID: 2100000, guid: d109158e826ec434198afe8ae8383b90, type: 2}
+  _matHopeful: {fileID: 2100000, guid: 6abbda8e8cdfce74694ef12427575c49, type: 2}
   _currentSafetyRange: 0
+  _pulses: 3
+  _pulseInterval: 0.5
   _playerCc: {fileID: 1400267337}
   _terminalVelocity: 20
   _maxSpeed: 10
