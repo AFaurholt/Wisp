@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &8707734944551645878
+--- !u!1 &133577328764771961
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,10 +8,12 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 8707734944551645874}
-  - component: {fileID: 8707734944551645875}
-  - component: {fileID: 8707734944551645872}
-  - component: {fileID: 8707734944551645873}
+  - component: {fileID: 133577328764771958}
+  - component: {fileID: 133577328764771959}
+  - component: {fileID: 133577328407269803}
+  - component: {fileID: 133577328764771960}
+  - component: {fileID: 133577328764771957}
+  - component: {fileID: 133577328764771956}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -19,27 +21,27 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &8707734944551645874
+--- !u!4 &133577328764771958
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8707734944551645878}
+  m_GameObject: {fileID: 133577328764771961}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.750195, y: -5.9551144, z: 24.374495}
+  m_LocalPosition: {x: 0, y: 0, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!120 &8707734944551645875
+--- !u!120 &133577328764771959
 LineRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8707734944551645878}
+  m_GameObject: {fileID: 133577328764771961}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -52,7 +54,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 5888c4f94dbd2b14abcad2da43b68633, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -131,35 +133,45 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
---- !u!114 &8707734944551645872
+--- !u!114 &133577328407269803
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8707734944551645878}
+  m_GameObject: {fileID: 133577328764771961}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9e7a83a9f5022a046b360f4d8861c4f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _modelGo: {fileID: 0}
   _playerCam: {fileID: 0}
   _playerCamOffset: {x: 0, y: 0, z: -10}
+  _playerCamMaxOffset: {x: 0, y: 0, z: -20}
+  _camTime: 1
+  _camVelocity: {x: 0, y: 0, z: 0}
+  _newCamPos: {x: 0, y: 0, z: 0}
   _playerLight: {fileID: 0}
-  _colorSafe: {r: 0, g: 0, b: 0, a: 0}
-  _colorDanger: {r: 0, g: 0, b: 0, a: 0}
+  _meshRend: {fileID: 0}
+  _colorSafe: {r: 0, g: 0.8763337, b: 1, a: 0}
+  _colorDanger: {r: 1, g: 0, b: 0, a: 0}
+  _colorHopeful: {r: 0, g: 0, b: 0, a: 0}
+  _matSafe: {fileID: 2100000, guid: d109158e826ec434198afe8ae8383b90, type: 2}
+  _matDanger: {fileID: 2100000, guid: 5c79a0ce03fa09940bee16993dfd8a2c, type: 2}
+  _matHopeful: {fileID: 2100000, guid: 6abbda8e8cdfce74694ef12427575c49, type: 2}
   _currentSafetyRange: 0
+  _pulses: 3
+  _pulseInterval: 0.5
   _playerCc: {fileID: 0}
   _terminalVelocity: 20
   _maxSpeed: 10
   _baseSpeed: 1
   _decelSpeed: 0.5
-  _dashSpeed: 50
-  _dashLengthS: 100
-  _currentDashLengthS: 0
+  _sprintExtraSpeed: 10
   _moveDirection: {x: 0, y: 0}
   _moveVelocity: {x: 0, y: 0}
-  _line: {fileID: 8707734944551645875}
+  _line: {fileID: 133577328764771959}
   _aimColor:
     serializedVersion: 2
     key0: {r: 0.11863652, g: 0.6993872, b: 0.8113208, a: 1}
@@ -220,13 +232,16 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   _maxLineLength: 20
   _linePoints: []
---- !u!114 &8707734944551645873
+  _keyHolder: {fileID: 0}
+  _keySpeed: 10
+  _deathWaitTime: 1
+--- !u!114 &133577328764771960
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8707734944551645878}
+  m_GameObject: {fileID: 133577328764771961}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
@@ -247,7 +262,7 @@ MonoBehaviour:
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8707734944551645872}
+      - m_Target: {fileID: 133577328407269803}
         m_TargetAssemblyTypeName: PlayerBehavior, Assembly-CSharp
         m_MethodName: OnMove
         m_Mode: 0
@@ -263,7 +278,7 @@ MonoBehaviour:
     m_ActionName: Player/Move[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8707734944551645872}
+      - m_Target: {fileID: 133577328407269803}
         m_TargetAssemblyTypeName: PlayerBehavior, Assembly-CSharp
         m_MethodName: OnLook
         m_Mode: 0
@@ -279,7 +294,7 @@ MonoBehaviour:
     m_ActionName: Player/Look[/Mouse/delta]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8707734944551645872}
+      - m_Target: {fileID: 133577328407269803}
         m_TargetAssemblyTypeName: PlayerBehavior, Assembly-CSharp
         m_MethodName: OnFire
         m_Mode: 0
@@ -333,8 +348,52 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 239a0edd-4779-4bab-a306-21ded325c76a
     m_ActionName: UI/TrackedDeviceOrientation
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 133577328407269803}
+        m_TargetAssemblyTypeName: Game.PlayerBehavior, Assembly-CSharp
+        m_MethodName: OnSprint
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 2b36750c-96c4-4655-8127-9a3874e888ec
+    m_ActionName: Player/Sprint[/Keyboard/leftShift]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &133577328764771957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 133577328764771961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0496841de2786424cabbf9236b607baf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  numberTest: {fileID: 0}
+  playerController: {fileID: 0}
+--- !u!114 &133577328764771956
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 133577328764771961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d40cd71f3610734f8926cfeb85628ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pointScore: 0
+  currentScore: {fileID: 0}
