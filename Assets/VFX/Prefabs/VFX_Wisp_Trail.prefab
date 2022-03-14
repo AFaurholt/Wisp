@@ -4878,7 +4878,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 0.25
+  m_Time: 0.5
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1
@@ -4908,9 +4908,9 @@ TrailRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.759434, g: 0.98260975, b: 1, a: 0}
-      key1: {r: 0.023529414, g: 0.9294118, b: 1, a: 1}
-      key2: {r: 0.25663045, g: 0.5530066, b: 0.6886792, a: 1}
+      key0: {r: 1, g: 1, b: 1, a: 0}
+      key1: {r: 0.7735849, g: 0.7735849, b: 0.7735849, a: 1}
+      key2: {r: 0.3490566, g: 0.3490566, b: 0.3490566, a: 1}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
       key5: {r: 0, g: 0, b: 0, a: 0}
@@ -4941,7 +4941,7 @@ TrailRenderer:
     textureMode: 0
     shadowBias: 0.5
     generateLightingData: 0
-  m_MinVertexDistance: 0.1
+  m_MinVertexDistance: 0.01
   m_Autodestruct: 0
   m_Emitting: 1
 --- !u!1 &2560812216403189840
@@ -5862,7 +5862,7 @@ ParticleSystem:
     rateOverDistance:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1
+      scalar: 3
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -6256,9 +6256,9 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 0.759434, g: 0.98260975, b: 1, a: 1}
-        key1: {r: 0.023529414, g: 0.9294118, b: 1, a: 1}
-        key2: {r: 0.25663045, g: 0.5530066, b: 0.6886792, a: 1}
+        key0: {r: 1, g: 1, b: 1, a: 1}
+        key1: {r: 0.6886792, g: 0.6886792, b: 0.6886792, a: 1}
+        key2: {r: 0.38679248, g: 0.38679248, b: 0.38679248, a: 1}
         key3: {r: 0, g: 0, b: 0, a: 0}
         key4: {r: 0, g: 0, b: 0, a: 0}
         key5: {r: 0, g: 0, b: 0, a: 0}

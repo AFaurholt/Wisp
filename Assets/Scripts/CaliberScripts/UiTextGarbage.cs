@@ -20,6 +20,6 @@ public class UiTextGarbage : MonoBehaviour
 
   void FixedUpdate()
   {
-    characterMagnitude = playerController.velocity.magnitude;
+    characterMagnitude = playerController.velocity.magnitude / 5;
   }
 }
