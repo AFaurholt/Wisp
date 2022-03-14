@@ -49,7 +49,7 @@ namespace Game
         _rb.velocity = dir * mag * PlayerManager.KeySpeed;
       }
 
-      if (_shouldDie && Vector3.Distance(_rb.transform.position, _keyHolder.transform.position) < 0.1f)
+      if (_shouldDie && Vector3.Distance(_rb.transform.position, _keyHolder.transform.position) <= 1f)
       {
         _keyHolder.GetComponent<KeyHoleBehavior>().StartMoving();
         Destroy(_rb.gameObject);
