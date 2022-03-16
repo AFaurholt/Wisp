@@ -61,6 +61,8 @@ namespace Game
     float _currentDeathWaitTime = 0f;
     bool _isDead = false;
     bool _isDeathCamMove = false;
+    [Header("Turret stuff")]
+    [SerializeField] float _visibleRadius = 0.3f;
 
     void Start()
     {
@@ -83,6 +85,7 @@ namespace Game
       PlayerManager.PlayerKeyHolder = _keyHolder;
       PlayerManager.KeySpeed = _keySpeed;
       PlayerManager.CurrentPlayer = this;
+      PlayerManager.VisibleRadius = _visibleRadius;
     }
 
     void Update()
@@ -178,6 +181,7 @@ namespace Game
                 _playerCc.transform.position = hit.transform.position;
                 _shouldTryZip = false; //we zipped good, don't zip more
                 _modelGo.SetActive(false);
+                PlayerManager.ZipHandler.Invoke(true);
               }
             }
           }
@@ -210,6 +214,8 @@ namespace Game
                   _playerCc.enabled = false; //disable collision
                   _playerCc.transform.position = maybeZip.transform.position;
                   _shouldTryZip = false; //we zipped good, don't zip more
+                  PlayerManager.ZipHandler.Invoke(true);
+
                 }
               }
             }
@@ -225,6 +231,8 @@ namespace Game
             _playerCc.transform.position = _linePoints[1];
             _playerCc.enabled = true;
             _modelGo.SetActive(true);
+            PlayerManager.ZipHandler.Invoke(false);
+
           }
         }
       }
@@ -268,7 +276,6 @@ namespace Game
           }
         }
       }
-
 
       PlayerManager.PlayerVelocity = _moveVelocity;
     }
