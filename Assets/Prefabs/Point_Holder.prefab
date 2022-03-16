@@ -87,6 +87,10 @@ PrefabInstance:
       value: Point1
       objectReference: {fileID: 0}
     - target: {fileID: 4409928020422135567, guid: 0f5b0b5bf477d044fbacaf055a90505e, type: 3}
+      propertyPath: flash
+      value: 
+      objectReference: {fileID: 6554183700610877793, guid: c05ef7453ae68c247900ecc6c4b8f6b5, type: 3}
+    - target: {fileID: 4409928020422135567, guid: 0f5b0b5bf477d044fbacaf055a90505e, type: 3}
       propertyPath: pointSFX
       value: 
       objectReference: {fileID: 3114199395122218641, guid: 64c317d2bab09a94b81a7d6204580c77, type: 3}
