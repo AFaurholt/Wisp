@@ -2139,6 +2139,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 133577328407269803, guid: 127d73a6eef3e0a4bbcc9ad6978f5ceb, type: 3}
+      propertyPath: _camTime
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 133577328407269803, guid: 127d73a6eef3e0a4bbcc9ad6978f5ceb, type: 3}
       propertyPath: _modelGo
       value: 
       objectReference: {fileID: 147817355}
@@ -8665,36 +8669,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1a69b175808681e47a8af2290fb362a4, type: 3}
   m_PrefabInstance: {fileID: 1832304482}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1842223230 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1312320350350432337, guid: fea96d60c33cdea41aae940b8375aeed, type: 3}
-  m_PrefabInstance: {fileID: 1934134042}
-  m_PrefabAsset: {fileID: 0}
---- !u!135 &1842223231 stripped
-SphereCollider:
-  m_CorrespondingSourceObject: {fileID: 1312320350350432339, guid: fea96d60c33cdea41aae940b8375aeed, type: 3}
-  m_PrefabInstance: {fileID: 1934134042}
-  m_PrefabAsset: {fileID: 0}
---- !u!54 &1842223232 stripped
-Rigidbody:
-  m_CorrespondingSourceObject: {fileID: 1312320350350432300, guid: fea96d60c33cdea41aae940b8375aeed, type: 3}
-  m_PrefabInstance: {fileID: 1934134042}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1842223236
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1842223230}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5aac027bee9108f4cab6aad5315d55ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _rb: {fileID: 1842223232}
-  _triggerZone: {fileID: 1842223231}
-  _keyHole: {fileID: 1413604319}
 --- !u!1001 &1857077145
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9262,8 +9236,7 @@ PrefabInstance:
       propertyPath: _keyHole
       value: 
       objectReference: {fileID: 1413604319}
-    m_RemovedComponents:
-    - {fileID: 1312320350350432338, guid: fea96d60c33cdea41aae940b8375aeed, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fea96d60c33cdea41aae940b8375aeed, type: 3}
 --- !u!1001 &1935676911
 PrefabInstance:
