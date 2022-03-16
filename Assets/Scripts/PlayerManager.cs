@@ -5,6 +5,7 @@ namespace Game
 {
   public static class PlayerManager
   {
+    public static float VisibleRadius { get; set; }
     public static UnityEvent<bool> ZipHandler { get; set; }
     public static Transform PlayerKeyHolder { get; set; }
     public static KeyBehavior CurrentKey { get; set; }

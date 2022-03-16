@@ -22,6 +22,7 @@ namespace Game
     private float _currentSearchTimer = 0f;
     [SerializeField] private string _playerTag = "Player";
     private Transform _playerTransform;
+    private Vector3 _lastSeen;
     private Quaternion _idleRot;
     private Rigidbody _rb;
     private int _newIdx = 0;
@@ -31,6 +32,8 @@ namespace Game
     private bool _isInc = true;
     private bool _playerIsZipped = false;
     private Quaternion _targetRot;
+    private RaycastHit[] scanHits;
+    private int scanMask;
 
     void Start()
     {
@@ -43,14 +46,23 @@ namespace Game
       _idleRot = _body.rotation;
       _targetRot = _idleRot;
       PlayerManager.SubscribeZip(PlayerIsZipped);
+      scanHits = new RaycastHit[10];
+      scanMask = ~(0 << PlayerManager.PlayerLayer << PlayerManager.PlayerPickupLayer);
     }
 
     void OnTriggerStay(Collider other)
     {
       if (other.gameObject.layer == PlayerManager.PlayerLayer)
       {
-        Debug.Log("hello");
+        if (CanSeePlayer())
+        {
+          _turretMode = TurretMode.HasTarget;
+          _lastSeen = _playerTransform.position;
+          return;
+        }
       }
+
+      _turretMode = TurretMode.LostTarget;
     }
 
     void FixedUpdate()
@@ -72,17 +84,16 @@ namespace Game
             _currentSearchTimer = 0f;
             speed = _huntSpeed;
             int closestIdx = 0;
-            float lastDist = Vector3.Distance(_playerTransform.position, _line.GetPosition(closestIdx));
+            float lastDist = Vector3.Distance(_lastSeen, _line.GetPosition(closestIdx));
             for (int i = 1; i < _line.positionCount; i++)
             {
-              var tmpDist = Vector3.Distance(_playerTransform.position, _line.GetPosition(i));
+              var tmpDist = Vector3.Distance(_lastSeen, _line.GetPosition(i));
               if (tmpDist < lastDist)
               {
                 lastDist = tmpDist;
                 closestIdx = i;
               }
             }
-            Debug.Log(closestIdx);
             _newIdx = closestIdx;
             break;
           }
@@ -130,12 +141,166 @@ namespace Game
         }
       }
       _root.position = Vector3.MoveTowards(_root.position, _line.GetPosition(_currentIdx), speed);
-      _body.rotation = Quaternion.RotateTowards(_body.rotation, _targetRot, _rotSpeed);
     }
 
     void PlayerIsZipped(bool b)
     {
       _playerIsZipped = b;
     }
+
+    bool CanSeePlayer()
+    {
+      if (!(_turretMode == TurretMode.Offline || _turretMode == TurretMode.Dying))
+      {
+        //center
+        int numHits = Physics.RaycastNonAlloc(
+          _playerTransform.position
+          , _turret.position - _playerTransform.position
+          , scanHits
+          , Mathf.Infinity
+          , scanMask
+          , QueryTriggerInteraction.Ignore);
+
+        Debug.DrawRay(_playerTransform.position, _turret.position - _playerTransform.position, Color.magenta);
+
+        if (numHits > 0)
+        {
+          int closestIdx = 0;
+          for (int i = 1; i < numHits; i++)
+          {
+            if (scanHits[closestIdx].distance > scanHits[i].distance)
+            {
+              closestIdx = i;
+            }
+          }
+          if (scanHits[closestIdx].transform == transform)
+          {
+            return true;
+          }
+        }
+
+        //right
+        var pos = _playerTransform.position + new Vector3(PlayerManager.VisibleRadius, 0, 0);
+        numHits = Physics.RaycastNonAlloc(
+          pos
+          , _turret.position - pos
+          , scanHits
+          , Mathf.Infinity
+          , scanMask
+          , QueryTriggerInteraction.Ignore);
+
+        Debug.DrawRay(pos, _turret.position - pos, Color.red);
+
+        if (numHits > 0)
+        {
+          int closestIdx = 0;
+          for (int i = 1; i < numHits; i++)
+          {
+            if (scanHits[closestIdx].distance > scanHits[i].distance)
+            {
+              closestIdx = i;
+            }
+          }
+          if (scanHits[closestIdx].transform == transform)
+          {
+            return true;
+          }
+        }
+
+        //left
+        pos = _playerTransform.position + new Vector3(-PlayerManager.VisibleRadius, 0, 0);
+        numHits = Physics.RaycastNonAlloc(
+          pos
+          , _turret.position - pos
+          , scanHits
+          , Mathf.Infinity
+          , scanMask
+          , QueryTriggerInteraction.Ignore);
+
+        Debug.DrawRay(pos, _turret.position - pos, Color.red);
+
+        if (numHits > 0)
+        {
+          int closestIdx = 0;
+          for (int i = 1; i < numHits; i++)
+          {
+            if (scanHits[closestIdx].distance > scanHits[i].distance)
+            {
+              closestIdx = i;
+            }
+          }
+          if (scanHits[closestIdx].transform == transform)
+          {
+            return true;
+          }
+        }
+
+        //up
+        pos = _playerTransform.position + new Vector3(0, PlayerManager.VisibleRadius, 0);
+        numHits = Physics.RaycastNonAlloc(
+          pos
+          , _turret.position - pos
+          , scanHits
+          , Mathf.Infinity
+          , scanMask
+          , QueryTriggerInteraction.Ignore);
+
+        Debug.DrawRay(pos, _turret.position - pos, Color.blue);
+
+        if (numHits > 0)
+        {
+          int closestIdx = 0;
+          for (int i = 1; i < numHits; i++)
+          {
+            if (scanHits[closestIdx].distance > scanHits[i].distance)
+            {
+              closestIdx = i;
+            }
+          }
+          if (scanHits[closestIdx].transform == transform)
+          {
+            return true;
+          }
+        }
+
+        //down
+        pos = _playerTransform.position + new Vector3(0, -PlayerManager.VisibleRadius, 0);
+        numHits = Physics.RaycastNonAlloc(
+          pos
+          , _turret.position - pos
+          , scanHits
+          , Mathf.Infinity
+          , scanMask
+          , QueryTriggerInteraction.Ignore);
+
+        Debug.DrawRay(pos, _turret.position - pos, Color.blue);
+
+        if (numHits > 0)
+        {
+          int closestIdx = 0;
+          for (int i = 1; i < numHits; i++)
+          {
+            if (scanHits[closestIdx].distance > scanHits[i].distance)
+            {
+              closestIdx = i;
+            }
+          }
+          if (scanHits[closestIdx].transform == transform)
+          {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    }
+
+    void AimAtPlayer()
+    {
+      
+    }
+
+    void LookAround()
+    {}
   }
 }

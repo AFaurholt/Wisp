@@ -61,6 +61,8 @@ namespace Game
     float _currentDeathWaitTime = 0f;
     bool _isDead = false;
     bool _isDeathCamMove = false;
+    [Header("Turret stuff")]
+    [SerializeField] float _visibleRadius = 0.3f;
 
     void Start()
     {
@@ -83,6 +85,7 @@ namespace Game
       PlayerManager.PlayerKeyHolder = _keyHolder;
       PlayerManager.KeySpeed = _keySpeed;
       PlayerManager.CurrentPlayer = this;
+      PlayerManager.VisibleRadius = _visibleRadius;
     }
 
     void Update()
