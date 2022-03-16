@@ -9,8 +9,12 @@ public class Collectible : MonoBehaviour
     public int pointValue;
     [SerializeField]
     private ParticleSystem flash;
+    private AudioSource pointAudio;
+    public AudioClip pointSound;
+    public GameObject pointSFX;
     void Start()
     {
+        pointAudio = GetComponent<AudioSource>();
         collectibleTracker = GameObject.Find("GameManager").GetComponent<CollectibleTracker>();
     }
 
@@ -24,6 +28,8 @@ public class Collectible : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player")) 
         {
+            Instantiate(pointSFX,transform.position,pointSFX.transform.rotation);
+            pointAudio.PlayOneShot(pointSound);
             Instantiate(flash, transform.position, flash.transform.rotation);
             collectibleTracker.pointScore += pointValue;
             Destroy(gameObject);

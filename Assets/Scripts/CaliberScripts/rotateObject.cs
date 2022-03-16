@@ -9,7 +9,7 @@ public class rotateObject : MonoBehaviour
     private Vector3 rotation;
     void Start()
     {
-        rotSpeed = 60;
+        
         
         
     }
