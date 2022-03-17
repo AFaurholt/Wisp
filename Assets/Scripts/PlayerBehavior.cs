@@ -273,6 +273,7 @@ namespace Game
             _playerCc.gameObject.layer = PlayerManager.PlayerLayer;
             _isDeathCamMove = false;
             _newCamPos = Vector3.SmoothDamp(from, _playerCc.transform.position + _playerCamOffset, ref _camVelocity, _camTime, _terminalVelocity + 1f, Time.fixedDeltaTime);
+            PlayerManager.RespawnHandler.Invoke();
           }
         }
       }

@@ -19,11 +19,14 @@ namespace Game
     [SerializeField] private float _huntSpeed = 0.2f;
     [SerializeField] private float _rotSpeed = 0.5f;
     [SerializeField] private float _searchTimer = 5f;
+    [SerializeField] private float _aimTimer = 5f;
+    private float _currentAimTimer = 0f;
     private float _currentSearchTimer = 0f;
     [SerializeField] private string _playerTag = "Player";
     private Transform _playerTransform;
     private Vector3 _lastSeen;
-    private Quaternion _idleRot;
+    private Quaternion _idleRotBody;
+    private Quaternion _idleRotTurret;
     private Rigidbody _rb;
     private int _newIdx = 0;
     private Transform _root;
@@ -34,6 +37,8 @@ namespace Game
     private Quaternion _targetRot;
     private RaycastHit[] scanHits;
     private int scanMask;
+    private ParticleSystem _ps;
+    private bool _shouldFire = false;
 
     void Start()
     {
@@ -43,11 +48,14 @@ namespace Game
       _body = transform.Find(_bodyName);
       _turret = transform.Find(_turretName);
       _root.position = _line.GetPosition(_currentIdx);
-      _idleRot = _body.rotation;
-      _targetRot = _idleRot;
+      _idleRotBody = _body.rotation;
+      _idleRotTurret = _turret.rotation;
+      _targetRot = _idleRotBody;
+      _ps = transform.Find($"{_turretName}/VFX_LaserBeam").GetComponent<ParticleSystem>();
       PlayerManager.SubscribeZip(PlayerIsZipped);
       scanHits = new RaycastHit[10];
       scanMask = ~(0 << PlayerManager.PlayerLayer << PlayerManager.PlayerPickupLayer);
+      PlayerManager.SubscribeRespawn(SetPatrolIfNotDead);
     }
 
     void OnTriggerStay(Collider other)
@@ -58,55 +66,81 @@ namespace Game
         {
           _turretMode = TurretMode.HasTarget;
           _lastSeen = _playerTransform.position;
-          return;
+        }
+        else if (_turretMode == TurretMode.HasTarget)
+        {
+          _turretMode = TurretMode.LostTarget;
         }
       }
+    }
 
-      _turretMode = TurretMode.LostTarget;
+    void OnTriggerExit(Collider other)
+    {
+      if (other.gameObject.layer == PlayerManager.PlayerLayer)
+      {
+        if (_turretMode == TurretMode.HasTarget)
+        {
+          _turretMode = TurretMode.LostTarget;
+        }
+      }
     }
 
     void FixedUpdate()
     {
+
       float speed = 0f;
       switch (_turretMode)
       {
         case TurretMode.LostTarget:
           {
+            _currentAimTimer = 0f;
             _currentSearchTimer += Time.fixedDeltaTime;
             if (_currentSearchTimer >= _searchTimer)
             {
               _turretMode = TurretMode.Patrol;
+            }
+            else
+            {
+              speed = _huntSpeed;
+              int closestIdx = 0;
+              float lastDist = Vector3.Distance(_lastSeen, _line.GetPosition(closestIdx));
+              for (int i = 1; i < _line.positionCount; i++)
+              {
+                var tmpDist = Vector3.Distance(_lastSeen, _line.GetPosition(i));
+                if (tmpDist < lastDist)
+                {
+                  lastDist = tmpDist;
+                  closestIdx = i;
+                }
+              }
+              _newIdx = closestIdx;
             }
             break;
           }
         case TurretMode.HasTarget:
           {
             _currentSearchTimer = 0f;
-            speed = _huntSpeed;
-            int closestIdx = 0;
-            float lastDist = Vector3.Distance(_lastSeen, _line.GetPosition(closestIdx));
-            for (int i = 1; i < _line.positionCount; i++)
+            AimAtPlayer();
+            _currentAimTimer += Time.fixedDeltaTime;
+            if (_currentAimTimer >= _aimTimer)
             {
-              var tmpDist = Vector3.Distance(_lastSeen, _line.GetPosition(i));
-              if (tmpDist < lastDist)
-              {
-                lastDist = tmpDist;
-                closestIdx = i;
-              }
+              _ps.Play();
+              PlayerManager.CurrentPlayer.Die();
+              _turretMode = TurretMode.Offline;
             }
-            _newIdx = closestIdx;
             break;
           }
         case TurretMode.Patrol:
           {
-            _targetRot = _idleRot;
+            _turret.rotation = _idleRotTurret;
+            _targetRot = _idleRotBody;
             speed = _patrolSpeed;
             if (_line.GetPosition(_newIdx) == _root.position)
             {
               if (_isInc)
               {
                 _newIdx++;
-                if (!(_line.positionCount > _newIdx))
+                if (!(_maxPatrolIdx > _newIdx))
                 {
                   _isInc = false;
                   _newIdx -= 2;
@@ -128,7 +162,6 @@ namespace Game
           break;
       }
 
-
       if (_line.GetPosition(_currentIdx) == _root.position)
       {
         if (_newIdx < _currentIdx)
@@ -145,7 +178,10 @@ namespace Game
 
     void PlayerIsZipped(bool b)
     {
-      _playerIsZipped = b;
+      if (b && _turretMode == TurretMode.HasTarget)
+      {
+        _turretMode = TurretMode.LostTarget;
+      }
     }
 
     bool CanSeePlayer()
@@ -297,10 +333,25 @@ namespace Game
 
     void AimAtPlayer()
     {
-      
+      //TODO make pretty
+      _turret.LookAt(_lastSeen, Vector3.left);
+      var q = Quaternion.AngleAxis(90, Vector3.down);
+      _turret.rotation *= q;
+
     }
 
     void LookAround()
-    {}
+    { }
+
+    void SetPatrolIfNotDead()
+    {
+      if (_turretMode != TurretMode.Dying)
+      {
+        _turretMode = TurretMode.Patrol;
+        _turret.rotation = _idleRotTurret;
+        _currentAimTimer = 0f;
+        _currentSearchTimer = 0f;
+      }
+    }
   }
 }
