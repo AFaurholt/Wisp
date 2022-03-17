@@ -56,6 +56,7 @@ namespace Game
       scanHits = new RaycastHit[10];
       scanMask = ~(0 << PlayerManager.PlayerLayer << PlayerManager.PlayerPickupLayer);
       PlayerManager.SubscribeRespawn(SetPatrolIfNotDead);
+      _newIdx = _currentIdx;
     }
 
     void OnTriggerStay(Collider other)
@@ -143,7 +144,7 @@ namespace Game
                 if (!(_maxPatrolIdx > _newIdx))
                 {
                   _isInc = false;
-                  _newIdx -= 2;
+                  _newIdx -= 1;
                 }
               }
               else
@@ -152,7 +153,7 @@ namespace Game
                 if (_newIdx < 0)
                 {
                   _isInc = true;
-                  _newIdx += 2;
+                  _newIdx += 1;
                 }
               }
             }
