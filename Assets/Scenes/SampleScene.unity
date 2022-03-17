@@ -307,17 +307,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _line: {fileID: 476294910}
-  _maxPatrolIdx: 0
+  _maxPatrolIdx: 1
   _rootName: robot_Turret/Root
   _bodyName: robot_Turret/Root/Main_Body
   _turretName: robot_Turret/Root/Main_Body/Turret
   _currentIdx: 0
-  _turretMode: 0
+  _turretMode: 1
   _patrolSpeed: 0.01
   _huntSpeed: 0.2
   _rotSpeed: 0.5
   _searchTimer: 2
-  _aimTimer: 5
+  _aimTimer: 3
   _playerTag: Player
 --- !u!4 &178874664
 Transform:
@@ -711,7 +711,7 @@ Transform:
   m_GameObject: {fileID: 379309972}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -2.75, y: 1.13, z: 2.58}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 3.5717, y: 6.1577, z: 0.30656}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 19
