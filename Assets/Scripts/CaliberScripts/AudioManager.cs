@@ -13,10 +13,10 @@ public class AudioManager : MonoBehaviour
   void Update()
   {
         characterMagnitude = playerController.velocity.magnitude;
-    wispLoop.volume = characterMagnitude / 5;
+    wispLoop.volume = characterMagnitude / 15;
         if (characterMagnitude == 0)
         {
-            wispIdle.volume = 0.5f;
+            wispIdle.volume = 0.3f;
         }
         else 
         {
