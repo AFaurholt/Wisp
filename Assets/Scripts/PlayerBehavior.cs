@@ -64,6 +64,11 @@ namespace Game
     [Header("Turret stuff")]
     [SerializeField] float _visibleRadius = 0.3f;
 
+        //Calibers changes start
+        [SerializeField] private GameObject deathSFX;
+        [SerializeField] private GameObject zipSFX;
+        //Calibers changes end
+
     void Start()
     {
       //get everything except player stuff
@@ -177,6 +182,9 @@ namespace Game
                 _moveVelocity = Vector3.zero; //dont retain velocity, it's weird
                 _zippedTo = maybeZip;
                 _zippedTo.DoZip();
+                                //Calibers Changes START
+                                Instantiate(zipSFX, transform.position, zipSFX.transform.rotation);
+                                //Calibers Changes END
                 _playerCc.enabled = false; //disable collision
                 _playerCc.transform.position = hit.transform.position;
                 _shouldTryZip = false; //we zipped good, don't zip more
@@ -208,7 +216,6 @@ namespace Game
                   {
                     _zippedTo.UndoZip();
                   }
-                  _moveVelocity = Vector3.zero; //dont retain velocity, it's weird
                   _zippedTo = maybeZip;
                   _zippedTo.DoZip();
                   _playerCc.enabled = false; //disable collision
@@ -226,6 +233,9 @@ namespace Game
           _currentLineColor = _legalTargetColor;
           if (_shouldTryZip)
           {
+                        //Calibers Changes START
+                        Instantiate(zipSFX, transform.position, zipSFX.transform.rotation);
+                        //Calibers Changes END
             _zippedTo.UndoZip();
             _zippedTo = null;
             _playerCc.transform.position = _linePoints[1];
@@ -252,6 +262,9 @@ namespace Game
       //death stuff
       if (_isDead)
       {
+                //Calibers Changes START
+                Instantiate(zipSFX, transform.position, deathSFX.transform.rotation);
+                //Calibers Changes END
         if (!_isDeathCamMove)
         {
           _currentDeathWaitTime += Time.fixedDeltaTime;

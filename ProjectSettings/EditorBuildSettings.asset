@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/CaliberTestScene.unity
     guid: b5eec39e42f7144408a490ac7f3d81a7
+  - enabled: 1
+    path: Assets/Scenes/Level_2.unity
+    guid: e0dcdba93324ea046b2159124006c123
   m_configObjects: {}

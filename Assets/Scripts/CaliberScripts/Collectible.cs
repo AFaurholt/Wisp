@@ -22,7 +22,7 @@ namespace Game
       if (other.gameObject.layer == PlayerManager.PlayerLayer)
       {
         Instantiate(pointSFX, transform.position, pointSFX.transform.rotation);
-        pointAudio.PlayOneShot(pointSound);
+        pointAudio.PlayOneShot(pointSound,0.3f);
         Instantiate(flash, transform.position, flash.transform.rotation);
         PlayerManager.CollectibleHandler?.Invoke(pointValue);
         Destroy(gameObject);
