@@ -11089,6 +11089,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 133577328407269803, guid: 127d73a6eef3e0a4bbcc9ad6978f5ceb, type: 3}
+      propertyPath: _matSafe
+      value: 
+      objectReference: {fileID: 2100000, guid: e34d185383ff19d4a92075ef2a32bce3, type: 2}
+    - target: {fileID: 133577328407269803, guid: 127d73a6eef3e0a4bbcc9ad6978f5ceb, type: 3}
       propertyPath: _modelGo
       value: 
       objectReference: {fileID: 1616982388}
@@ -11105,9 +11109,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1619978734}
     - target: {fileID: 133577328407269803, guid: 127d73a6eef3e0a4bbcc9ad6978f5ceb, type: 3}
+      propertyPath: _matDanger
+      value: 
+      objectReference: {fileID: 2100000, guid: e34d185383ff19d4a92075ef2a32bce3, type: 2}
+    - target: {fileID: 133577328407269803, guid: 127d73a6eef3e0a4bbcc9ad6978f5ceb, type: 3}
       propertyPath: _playerCam
       value: 
       objectReference: {fileID: 543418517}
+    - target: {fileID: 133577328407269803, guid: 127d73a6eef3e0a4bbcc9ad6978f5ceb, type: 3}
+      propertyPath: _matHopeful
+      value: 
+      objectReference: {fileID: 2100000, guid: e34d185383ff19d4a92075ef2a32bce3, type: 2}
     - target: {fileID: 133577328407269803, guid: 127d73a6eef3e0a4bbcc9ad6978f5ceb, type: 3}
       propertyPath: _playerLight
       value: 
