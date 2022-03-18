@@ -20,7 +20,6 @@ public class UiTextGarbage : MonoBehaviour
   void Update()
   {
     numberTest.text = "Magnitude " + characterMagnitude;
-
   }
 
   void FixedUpdate()

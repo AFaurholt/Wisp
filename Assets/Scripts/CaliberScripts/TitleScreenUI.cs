@@ -9,19 +9,11 @@ public class TitleScreenUI : MonoBehaviour
 {
     public Button start;
     public TextMeshProUGUI Wisp;
+    public string NextLevel = "";
 
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     public void StartGame()
     {
-        Debug.Log("Game Started");
+       SceneManager.LoadScene(NextLevel);
     }
 }

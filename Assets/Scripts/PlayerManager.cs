@@ -8,6 +8,7 @@ namespace Game
     public static float VisibleRadius { get; set; }
     public static UnityEvent<bool> ZipHandler { get; set; }
     public static UnityEvent RespawnHandler { get; set; }
+    public static UnityEvent<int> CollectibleHandler { get; set; }
     public static Transform PlayerKeyHolder { get; set; }
     public static KeyBehavior CurrentKey { get; set; }
     public static float KeySpeed { get; internal set; }
@@ -30,13 +31,19 @@ namespace Game
 
       ZipHandler.AddListener(ua);
     }
-
     public static void SubscribeRespawn(UnityAction ua)
     {
       if (RespawnHandler == null)
         RespawnHandler = new UnityEvent();
 
       RespawnHandler.AddListener(ua);
+    }
+    public static void SubscribeCollectible(UnityAction<int> ua)
+    {
+      if (CollectibleHandler == null)
+        CollectibleHandler = new UnityEvent<int>();
+
+      CollectibleHandler.AddListener(ua);
     }
   }
 }

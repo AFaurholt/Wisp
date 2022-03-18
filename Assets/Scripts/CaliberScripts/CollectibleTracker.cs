@@ -2,22 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-public class CollectibleTracker : MonoBehaviour
+
+namespace Game
 {
-    public int pointScore;
+
+  public class CollectibleTracker : MonoBehaviour
+  {
+    public int pointScore = 0;
     public TextMeshProUGUI currentScore;
-    
-    
+
     void Start()
     {
-        pointScore = 0;
+      PlayerManager.SubscribeCollectible(UpdateScore);
+      currentScore.text = $"Score: {pointScore}";
     }
 
-    // Update is called once per frame
-    void Update()
+    void UpdateScore(int point)
     {
-        currentScore.text = "Score: " + pointScore;
+      pointScore += point;
+      currentScore.text = $"Score: {pointScore}";
     }
-
-    
+  }
 }
