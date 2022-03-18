@@ -181,7 +181,7 @@ namespace Game
                 _playerCc.transform.position = hit.transform.position;
                 _shouldTryZip = false; //we zipped good, don't zip more
                 _modelGo.SetActive(false);
-                PlayerManager.ZipHandler.Invoke(true);
+                PlayerManager.ZipHandler?.Invoke(true);
               }
             }
           }
@@ -214,7 +214,7 @@ namespace Game
                   _playerCc.enabled = false; //disable collision
                   _playerCc.transform.position = maybeZip.transform.position;
                   _shouldTryZip = false; //we zipped good, don't zip more
-                  PlayerManager.ZipHandler.Invoke(true);
+                  PlayerManager.ZipHandler?.Invoke(true);
 
                 }
               }
@@ -231,7 +231,7 @@ namespace Game
             _playerCc.transform.position = _linePoints[1];
             _playerCc.enabled = true;
             _modelGo.SetActive(true);
-            PlayerManager.ZipHandler.Invoke(false);
+            PlayerManager.ZipHandler?.Invoke(false);
 
           }
         }
@@ -273,7 +273,7 @@ namespace Game
             _playerCc.gameObject.layer = PlayerManager.PlayerLayer;
             _isDeathCamMove = false;
             _newCamPos = Vector3.SmoothDamp(from, _playerCc.transform.position + _playerCamOffset, ref _camVelocity, _camTime, _terminalVelocity + 1f, Time.fixedDeltaTime);
-            PlayerManager.RespawnHandler.Invoke();
+            PlayerManager.RespawnHandler?.Invoke();
           }
         }
       }

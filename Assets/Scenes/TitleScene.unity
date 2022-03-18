@@ -8136,6 +8136,16 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 451228557395562050, guid: 9abdac9428e8ae846bdd253ab6316460, type: 3}
   m_PrefabInstance: {fileID: 1371755148}
   m_PrefabAsset: {fileID: 0}
+--- !u!108 &1616982390 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 451228557395562052, guid: 9abdac9428e8ae846bdd253ab6316460, type: 3}
+  m_PrefabInstance: {fileID: 1371755148}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &1616982391 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 451228557395562055, guid: 9abdac9428e8ae846bdd253ab6316460, type: 3}
+  m_PrefabInstance: {fileID: 1371755148}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1618047357 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 06ca92e2f58253045aa172c18743e0c5, type: 3}
@@ -10539,6 +10549,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   start: {fileID: 1757608577}
   Wisp: {fileID: 743924046}
+  NextLevel: Level_1
 --- !u!1001 &2093763391
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10866,6 +10877,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1616982388}
     - target: {fileID: 133577328407269803, guid: 127d73a6eef3e0a4bbcc9ad6978f5ceb, type: 3}
+      propertyPath: _meshRend
+      value: 
+      objectReference: {fileID: 1616982391}
+    - target: {fileID: 133577328407269803, guid: 127d73a6eef3e0a4bbcc9ad6978f5ceb, type: 3}
       propertyPath: _playerCc
       value: 
       objectReference: {fileID: 520746008}
@@ -10877,6 +10892,10 @@ PrefabInstance:
       propertyPath: _playerCam
       value: 
       objectReference: {fileID: 543418517}
+    - target: {fileID: 133577328407269803, guid: 127d73a6eef3e0a4bbcc9ad6978f5ceb, type: 3}
+      propertyPath: _playerLight
+      value: 
+      objectReference: {fileID: 1616982390}
     - target: {fileID: 133577328764771956, guid: 127d73a6eef3e0a4bbcc9ad6978f5ceb, type: 3}
       propertyPath: m_Enabled
       value: 0
