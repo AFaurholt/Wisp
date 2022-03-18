@@ -1,14 +1,9 @@
 fileFormatVersion: 2
-guid: 4240671a93be9064ca6d54cf0cd055be
+guid: 7575cdb264b013146bf40d7ac9efe1c2
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: phong1
-    second: {fileID: 2100000, guid: 6894b9591f29f4a48aee60af57225d34, type: 2}
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -38,13 +33,7 @@ ModelImporter:
     clipAnimations: []
     isReadable: 0
   meshes:
-    lODScreenPercentages:
-    - 0.83234775
-    - 0.68714565
-    - 0.5007361
-    - 0.249
-    - 0.14104904
-    - 0.01
+    lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
     addColliders: 0
