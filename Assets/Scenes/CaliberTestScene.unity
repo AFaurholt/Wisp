@@ -41537,8 +41537,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f5df6c1591d9f547a8e81b9db44259c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _text: foobar
-  _nextLevel: TitleScene
+  _text: Victory!
+  _nextLevel: Level_1
   _canvas: {fileID: 605777560}
 --- !u!65 &1498123330
 BoxCollider:
@@ -41560,7 +41560,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1498123328}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -41610,8 +41610,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1498123328}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -68.9, y: 1.41, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 36.1, y: 1.41, z: 0}
+  m_LocalScale: {x: 12.501, y: 20.936676, z: 12.501}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 37
@@ -58198,6 +58198,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 133577328407269803, guid: 127d73a6eef3e0a4bbcc9ad6978f5ceb, type: 3}
+      propertyPath: _camTime
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 133577328407269803, guid: 127d73a6eef3e0a4bbcc9ad6978f5ceb, type: 3}
       propertyPath: _modelGo
       value: 
