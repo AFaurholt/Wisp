@@ -332,5 +332,10 @@ namespace Game
         PlayerManager.CurrentKey.ResetKey();
       }
     }
+
+    public void OnExit(InputAction.CallbackContext cbt)
+    {
+      Application.Quit(0);
+    }
   }
 }
