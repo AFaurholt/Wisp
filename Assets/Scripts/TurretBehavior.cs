@@ -40,6 +40,11 @@ namespace Game
     private ParticleSystem _ps;
     private bool _shouldFire = false;
 
+        // Calibers changes start
+        [SerializeField] private GameObject turretAimSFX;
+        [SerializeField] private GameObject turretFireSFX;
+        //Calibers changes end
+
     void Start()
     {
       _playerTransform = GameObject.FindWithTag(_playerTag).transform;
@@ -126,6 +131,9 @@ namespace Game
             if (_currentAimTimer >= _aimTimer)
             {
               _ps.Play();
+                            //Calibers changes start
+              Instantiate(turretFireSFX,transform.position,turretFireSFX.transform.rotation);
+                            //calibers changes end
               PlayerManager.CurrentPlayer.Die();
               _turretMode = TurretMode.Offline;
             }
@@ -339,6 +347,9 @@ namespace Game
       var q = Quaternion.AngleAxis(90, Vector3.down);
       _turret.rotation *= q;
 
+            // Calibers changes start
+            Instantiate(turretAimSFX,transform.position,turretAimSFX.transform.rotation);
+            // Calibers changes end
     }
 
     void LookAround()

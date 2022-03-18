@@ -8794,6 +8794,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 133577328407269803, guid: 127d73a6eef3e0a4bbcc9ad6978f5ceb, type: 3}
+      propertyPath: zipSFX
+      value: 
+      objectReference: {fileID: 3562021768694556231, guid: 9170d17b26616a244afbbadd8360760e, type: 3}
+    - target: {fileID: 133577328407269803, guid: 127d73a6eef3e0a4bbcc9ad6978f5ceb, type: 3}
       propertyPath: _camTime
       value: 0.3
       objectReference: {fileID: 0}
@@ -8805,6 +8809,10 @@ PrefabInstance:
       propertyPath: _modelGo
       value: 
       objectReference: {fileID: 147817355}
+    - target: {fileID: 133577328407269803, guid: 127d73a6eef3e0a4bbcc9ad6978f5ceb, type: 3}
+      propertyPath: deathSFX
+      value: 
+      objectReference: {fileID: 3562021768694556231, guid: 9170d17b26616a244afbbadd8360760e, type: 3}
     - target: {fileID: 133577328407269803, guid: 127d73a6eef3e0a4bbcc9ad6978f5ceb, type: 3}
       propertyPath: _maxSpeed
       value: 12
@@ -10710,6 +10718,7 @@ MonoBehaviour:
   - from: {fileID: 1711802305}
     to: {fileID: 268477237}
     time: 6
+  doorSFX: {fileID: 0}
 --- !u!65 &451079128
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -16550,8 +16559,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f5df6c1591d9f547a8e81b9db44259c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _text: VICTORY! Would you like to restart?
-  _nextLevel: TitleScene
+  _text: Victory!
+  _nextLevel: Level_2
   _canvas: {fileID: 49192043}
 --- !u!65 &692355345
 BoxCollider:
@@ -23352,6 +23361,7 @@ MonoBehaviour:
   - from: {fileID: 1711802305}
     to: {fileID: 268477237}
     time: 6
+  doorSFX: {fileID: 5983760842397822776, guid: fcb9dc099c09ce540ab3df256b65b3bc, type: 3}
 --- !u!65 &990099365
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -27036,6 +27046,7 @@ MonoBehaviour:
   - from: {fileID: 1670149170}
     to: {fileID: 29705748}
     time: 6
+  doorSFX: {fileID: 5983760842397822776, guid: fcb9dc099c09ce540ab3df256b65b3bc, type: 3}
 --- !u!65 &1085317793
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -33607,6 +33618,7 @@ MonoBehaviour:
   - from: {fileID: 1568391307}
     to: {fileID: 368387553}
     time: 6
+  doorSFX: {fileID: 5983760842397822776, guid: fcb9dc099c09ce540ab3df256b65b3bc, type: 3}
 --- !u!65 &1413604321
 BoxCollider:
   m_ObjectHideFlags: 0

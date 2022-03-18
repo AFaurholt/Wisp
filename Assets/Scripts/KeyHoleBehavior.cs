@@ -13,6 +13,9 @@ namespace Game
     bool _shouldMove = false;
     float _currentTime = 0f;
     Vector3 _from;
+        //Caliber change start
+        [SerializeField] private GameObject doorSFX;
+        //Caliber change END
 
     void Start()
     {
@@ -53,6 +56,9 @@ namespace Game
 
     public void StartMoving()
     {
+            //Caliber Change Start
+            Instantiate(doorSFX,transform.position,doorSFX.transform.rotation);
+            //Caliber Change Stop
       _shouldMove = true;
     }
   }
